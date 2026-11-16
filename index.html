@@ -114,6 +114,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
 .blk li{font-size:17px;line-height:1.7;color:var(--text);padding-left:16px;position:relative}
 .blk li::before{content:"";position:absolute;left:2px;top:.75em;width:5px;height:5px;border-radius:50%;background:#b9b9b9}
 .src{font-size:13px;color:var(--sub);margin-top:18px}
+.note{margin-top:14px}.note-btn{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--sub);cursor:pointer;text-decoration:underline;text-decoration-color:#cfcfcf;text-underline-offset:3px}.note-btn:hover{color:var(--ink)}.note-box iframe{margin-top:12px}
 .src a{text-decoration:underline;text-decoration-color:#cfcfcf;text-underline-offset:3px}
 .src a:hover{color:var(--ink);text-decoration-color:var(--ink)}
 
@@ -245,6 +246,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
     }).join('')+'</div>';
     return '<div class="blocks"><p>'+(it.facts||[]).map(esc).join(' ')+'</p></div>';
   }
+  function note(term){ return '<div class="note"><button type="button" class="note-btn" data-term="'+escRaw(term)+'">생각 남기기</button><div class="note-box"></div></div>'; }
+  function closeNotes(){ document.querySelectorAll('.note-box[data-open]').forEach(function(b){ b.innerHTML=''; delete b.dataset.open; b.previousElementSibling.textContent='생각 남기기'; }); }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest && e.target.closest('.note-btn'); if(!btn) return;
+    var box = btn.nextElementSibling, wasOpen = !!box.dataset.open;
+    closeNotes(); if(wasOpen) return;
+    var s = document.createElement('script'); s.src = 'https://giscus.app/client.js'; s.async = true; s.crossOrigin = 'anonymous';
+    var a = {repo:'dukankim21/roadtodirector', repoId:'R_kgDOVwmQbQ', category:'Announcements', categoryId:'DIC_kwDOVwmQbc4DLRag', mapping:'specific', term:btn.dataset.term, strict:'1', reactionsEnabled:'0', emitMetadata:'0', inputPosition:'top', theme:'light', lang:'ko'};
+    for(var k in a) s.setAttribute('data-'+k.replace(/[A-Z]/g,function(c){return '-'+c.toLowerCase();}), a[k]);
+    box.appendChild(s); box.dataset.open = '1'; btn.textContent = '닫기';
+  });
   function srcLine(list){
     if(!list||!list.length) return '';
     return '<div class="src">출처 · '+list.map(function(x){return '<a href="'+escRaw(x.url)+'" target="_blank" rel="noopener">'+esc(x.name)+'</a>';}).join(' · ')+'</div>';
@@ -260,7 +272,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
     h += '<div class="items">'+(r.items||[]).map(function(it,i){
       return '<section class="item"><div class="i-meta"><span class="i-no">'+String(i+1).padStart(2,"0")+'</span>'
         +(it.important?'<span class="badge">중요</span>':'')+(it.when?'<span class="i-when">'+esc(it.when)+'</span>':'')+'</div>'
-        +'<div><h3>'+esc(it.title)+'</h3>'+blocks(it)+srcLine(it.sources)+'</div></section>';
+        +'<div><h3>'+esc(it.title)+'</h3>'+blocks(it)+srcLine(it.sources)+note(idOf(r)+'-'+(i+1))+'</div></section>';
     }).join('')+'</div>';
     var after = '';
     if(r.takeaways&&r.takeaways.length) after += '<div><h4>해석 메모</h4><ul>'+r.takeaways.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></div>';
@@ -282,7 +294,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
             +'<span class="ptype">'+esc(w.type)+'</span><h3>'+esc(w.title)+'</h3><span class="pmaker">'+esc(w.maker||'')+'</span>'
             +(w.basis?'<span class="basis"><b>'+esc(w.basis.kind)+'</b>'+esc(w.basis.text)+'</span>':'')+'<span class="more">자세히</span></summary>'
             +'<div class="pd-body">'+(w.when?'<div class="pd-when">'+esc(w.when)+'</div>':'')+(w.facts||[]).map(function(f){return '<p>'+esc(f)+'</p>';}).join('')
-            +(w.link?'<a class="watch" href="'+escRaw(w.link)+'" target="_blank" rel="noopener">보기 ↗</a>':'')+srcLine(w.sources)+'</div></details>';
+            +(w.link?'<a class="watch" href="'+escRaw(w.link)+'" target="_blank" rel="noopener">보기 ↗</a>':'')+srcLine(w.sources)+note('picks-'+r.date+'-'+(i+1))+'</div></details>';
         }).join('')+'</div></section>';
   }
 
