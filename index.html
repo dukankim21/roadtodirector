@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주간 동향 브리핑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: white page. One featured report large at the top, then each category as a short list. A category opens as one continuous reading page with every report expanded. Colour marks category labels only. */
+:root{
+  --bg:#ffffff;
+  --ink:#141414;
+  --text:#2f2f2f;
+  --sub:#767676;
+  --line:#e7e7e7;
+  --tile:#f2f2f0;
+  --c-film:#b4531f;
+  --c-drama:#a3335d;
+  --c-mv:#6d3fb5;
+  --c-ad:#0f7a6c;
+  --c-ai:#2457c5;
+  --c-picks:#8a5a12;
+  --f:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit;text-decoration:none}
+.lb{margin-left:-.4em}.rb{margin-right:-.4em}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* header */
+.top{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,32px);height:60px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-weight:800;font-size:16px;letter-spacing:-.02em;white-space:nowrap}
+.tabs{display:flex;gap:24px;overflow-x:auto}
+.tabs a{font-size:15px;color:var(--sub);white-space:nowrap;padding:18px 0;border-bottom:2px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--catc,var(--ink));font-weight:700;border-bottom-color:var(--catc,var(--ink))}
+
+.page{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,32px) 120px}
+
+/* labels: the only coloured type on the page */
+.label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--catc);letter-spacing:.01em}
+.label i{font-style:normal;font-weight:500;color:var(--sub)}
+
+/* featured */
+.hero{display:block;padding:40px 0 48px;border-bottom:1px solid var(--line)}
+.hero .img{aspect-ratio:21/9;background:var(--tile);overflow:hidden}
+.hero .img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+@media (hover:hover){.hero:hover .img img{transform:scale(1.02)}}
+.hero-body{margin-top:24px}
+.hero h1{margin:8px 0 0;font-size:clamp(19px,5.3vw,38px);font-weight:800;line-height:1.3;letter-spacing:-.035em}
+.deck{margin:8px 0 0;font-size:clamp(16px,2vw,20px);font-weight:600;line-height:1.5;color:var(--sub);letter-spacing:-.02em}
+.hero .points{margin-top:20px}
+@media (hover:hover){.hero:hover h1{color:var(--catc)}}
+.points{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.points li{font-size:16.5px;line-height:1.65;color:var(--text);padding-left:16px;position:relative}
+.points li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--catc)}
+
+/* category lists on home */
+.shelf{padding-top:44px}
+.shelf-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.shelf-head h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--catc)}
+.shelf-head a{font-size:14px;color:var(--sub)}
+.shelf-head a:hover{color:var(--catc)}
+.row{display:grid;grid-template-columns:168px minmax(0,1fr);gap:22px;padding:18px 0;border-bottom:1px solid var(--line)}
+.row .img{aspect-ratio:3/2;background:var(--tile);overflow:hidden}
+.row .img img{width:100%;height:100%;object-fit:cover;display:block}
+.row-date{font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums}
+.row h3{margin:2px 0 6px;font-size:18px;font-weight:700;line-height:1.45;letter-spacing:-.025em;text-wrap:balance}
+@media (hover:hover){.row:hover h3{color:var(--catc)}}
+.row p{margin:0;font-size:15px;line-height:1.65;color:var(--sub)}
+
+/* reading page */
+.cat-head{padding:40px 0 8px}
+.cat-head h1{margin:0;font-size:32px;font-weight:800;letter-spacing:-.04em;color:var(--catc)}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.jump button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:#fff;color:var(--text);padding:5px 12px;border-radius:999px;cursor:pointer}
+.jump button:hover{border-color:var(--catc);color:var(--catc)}
+
+.report{padding:48px 0 56px;border-top:3px solid var(--ink);margin-top:40px;scroll-margin-top:72px}
+.report:first-of-type{margin-top:24px}
+.indent{margin-left:220px;max-width:820px}
+.r-head h2{margin:8px 0 0;font-size:clamp(19px,5.3vw,34px);font-weight:800;line-height:1.32;letter-spacing:-.035em}
+.r-range{font-size:13.5px;color:var(--sub);margin-top:8px}
+.r-img{margin:28px 0 0}
+.r-img img{width:100%;aspect-ratio:21/9;object-fit:cover;display:block;background:var(--tile)}
+.r-img figcaption{font-size:12.5px;color:var(--sub);margin-top:6px}
+.keys{margin-top:32px;padding:20px 24px;background:color-mix(in srgb,var(--catc) 7%,#fff)}
+.keys .k-title{font-size:13px;font-weight:700;color:var(--catc);margin-bottom:10px}
+
+.item{display:grid;grid-template-columns:180px minmax(0,820px);gap:40px;padding:36px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.i-meta{display:flex;flex-direction:column;gap:8px;padding-top:4px}
+.i-no{font-size:28px;font-weight:800;line-height:1;color:var(--catc);font-variant-numeric:tabular-nums}
+.badge{align-self:flex-start;font-size:12px;font-weight:700;color:#fff;background:var(--catc);padding:1px 8px;border-radius:3px}
+.i-when{font-size:13.5px;line-height:1.5;color:var(--sub)}
+.item h3{margin:0 0 12px;font-size:21px;font-weight:800;line-height:1.45;letter-spacing:-.03em;text-wrap:balance}
+.item p{margin:0;font-size:17px;line-height:1.8;color:var(--text);word-break:keep-all}
+.blocks{display:flex;flex-direction:column;gap:16px}
+.lead-p{margin:0;font-size:18px;line-height:1.7;font-weight:600;color:var(--ink)}
+.blk-h{display:inline-block}
+.blk-h{font-size:13px;font-weight:700;color:var(--catc);margin-bottom:2px;letter-spacing:.02em}
+.blk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.blk li{font-size:17px;line-height:1.7;color:var(--text);padding-left:16px;position:relative}
+.blk li::before{content:"";position:absolute;left:2px;top:.75em;width:5px;height:5px;border-radius:50%;background:#b9b9b9}
+.src{font-size:13px;color:var(--sub);margin-top:18px}
+.src a{text-decoration:underline;text-decoration-color:#cfcfcf;text-underline-offset:3px}
+.src a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+
+.after{margin-top:24px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:28px}
+.after h4{margin:0 0 10px;font-size:13px;font-weight:700;color:var(--sub);letter-spacing:.02em}
+.after ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.after li{font-size:15px;line-height:1.7;color:var(--sub)}
+.after li a{color:var(--text);text-decoration:underline;text-decoration-color:#cfcfcf;text-underline-offset:3px}
+.after li span{display:block;font-size:14px}
+
+/* references */
+.picks{padding-top:44px}
+.pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px;margin-top:14px}
+.pcard{display:flex;flex-direction:column;gap:8px}
+.pcard .img{aspect-ratio:16/10;background:var(--tile);overflow:hidden}
+.pcard .img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.pcard:hover .img img{transform:scale(1.03)}
+.ptype{font-size:12.5px;font-weight:700;color:var(--c-picks)}
+.pcard h3{margin:0;font-size:16px;font-weight:700;line-height:1.45;letter-spacing:-.02em}
+.pcard:hover h3{text-decoration:underline;text-underline-offset:4px}
+.pmaker{font-size:13.5px;color:var(--sub);line-height:1.5}
+.work{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;padding:40px 0;border-bottom:1px solid var(--line);scroll-margin-top:72px}
+.work .img{aspect-ratio:16/10;background:var(--tile);overflow:hidden;display:block}
+.work .img img{width:100%;height:100%;object-fit:cover;display:block}
+.work h3{margin:6px 0 4px;font-size:21px;font-weight:800;line-height:1.4;letter-spacing:-.03em}
+.work .pmaker{margin-bottom:14px}
+.work p{margin:0 0 10px;font-size:16px;line-height:1.8;color:var(--text)}
+.basis{display:block;font-size:12.5px;line-height:1.5;color:var(--sub);margin:2px 0 12px}
+.pcard .basis{margin:0}
+.basis b{display:inline-block;font-weight:700;color:var(--c-picks);border:1px solid color-mix(in srgb,var(--c-picks) 40%,#fff);border-radius:3px;padding:0 5px;margin-right:6px;font-size:11.5px}
+.week{padding-top:36px;scroll-margin-top:72px}
+.week-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.week-head h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em}
+.week-head span{font-size:13.5px;color:var(--sub)}
+.pd{display:flex;flex-direction:column}
+.pd summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.pd summary::-webkit-details-marker{display:none}
+.pd summary .img{aspect-ratio:16/10;background:var(--tile);overflow:hidden}
+.pd summary .img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.pd summary:hover .img img{transform:scale(1.03)}
+.pd summary h3{margin:0;font-size:16px;font-weight:700;line-height:1.45;letter-spacing:-.02em}
+.pd .more{font-size:12.5px;color:var(--c-picks);font-weight:700}
+.pd .more::after{content:" ▾"}
+.pd[open] .more::after{content:" ▴"}
+.pd-body{padding:12px 0 4px;border-top:1px solid var(--line);margin-top:10px}
+.pd-when{font-size:13px;color:var(--sub);margin-bottom:6px}
+.pd-body p{margin:0 0 8px;font-size:15px;line-height:1.75;color:var(--text)}
+.watch{display:inline-block;margin-top:6px;font-size:14px;font-weight:700;color:var(--c-picks)}
+.watch:hover{text-decoration:underline;text-underline-offset:4px}
+@media (max-width:900px){
+  .indent{margin-left:0}
+  .item{grid-template-columns:1fr;gap:10px}
+  .i-meta{flex-direction:row;align-items:center;gap:10px}
+  .i-no{font-size:18px}
+}
+@media (max-width:640px){
+  .top-in{height:auto;flex-direction:column;align-items:flex-start;gap:0;padding-top:12px}
+  .tabs a{padding:10px 0}
+  .hero .img,.r-img img{aspect-ratio:16/10}
+  .row{grid-template-columns:110px minmax(0,1fr);gap:14px}
+  .row h3{font-size:16px}
+  .row p{display:none}
+  .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}
+  .work{grid-template-columns:1fr;gap:16px}
+}
+@media (prefers-reduced-motion:reduce){.hero .img img{transition:none}.hero:hover .img img{transform:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="brand" href="#">주간 동향 브리핑</a>
+  <nav class="tabs" id="tabs" aria-label="분류"></nav>
+</div></header>
+<main id="main"></main>
+
+<script>
+(function(){
+  var DATA, CAT = {};
+  var esc = function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+  var escRaw = esc;
+  esc = function(s){return escRaw(s).replace(/〈/g,'<span class="lb">〈</span>').replace(/〉/g,'<span class="rb">〉</span>');};
+  var fmt = function(d){return d.replace(/-/g,".");};
+  var idOf = function(r){return r.category+"-"+r.date;};
+  var col = function(c){return "var(--c-"+c+")";};
+  var img = function(r){return r.image?'<img src="'+escRaw(r.image)+'" alt="" loading="lazy" onerror="this.remove()">':'';};
+  var points = function(list){return '<ul class="points">'+(list||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';};
+
+  function tabs(active){
+    var h = '<a href="#" '+(active===""?'aria-current="page"':'')+'>전체</a>';
+    DATA.categories.forEach(function(c){
+      h += '<a href="#'+c.id+'" style="--catc:'+col(c.id)+'" '+(active===c.id?'aria-current="page"':'')+'>'+esc(c.name)+'</a>';
+    });
+    document.getElementById("tabs").innerHTML = h;
+  }
+
+  function home(){
+    var news = DATA.reports.filter(function(r){return r.category!=='picks';});
+    var pk = DATA.reports.filter(function(r){return r.category==='picks';})[0];
+    var feat = news.filter(function(r){return r.featured;})[0] || news[0];
+    var c = CAT[feat.category];
+    var h = '<div class="page"><a class="hero" href="#'+idOf(feat)+'" style="--catc:'+col(feat.category)+'">'
+      +'<div class="img">'+img(feat)+'</div><div class="hero-body">'
+      +'<span class="label">'+esc(c.name)+'<i>'+fmt(feat.date)+'</i></span>'
+      +'<h1>'+esc(feat.title)+'</h1>'+(feat.subtitle?'<p class="deck">'+esc(feat.subtitle)+'</p>':'')+points(feat.highlights)+'</div></a>';
+    if(pk && pk.works && pk.works.length){
+      h += '<section class="picks" style="--catc:var(--c-picks)"><div class="shelf-head"><h2>레퍼런스</h2><a href="#picks">레퍼런스 탭에서 전체 보기 →</a></div><div class="pgrid">'
+        + pk.works.slice(0,3).map(function(w,i){return '<a class="pcard" href="#picks-'+pk.date+'-'+(i+1)+'"><div class="img">'+(w.image?'<img src="'+escRaw(w.image)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</div><span class="ptype">'+esc(w.type)+'</span><h3>'+esc(w.title)+'</h3><span class="pmaker">'+esc(w.maker||'')+'</span>'+(w.basis?'<span class="basis"><b>'+esc(w.basis.kind)+'</b>'+esc(w.basis.text)+'</span>':'')+'</a>';}).join('')
+        + '</div></section>';
+    }
+    DATA.categories.forEach(function(cc){
+      if(cc.id==='picks') return;
+      var list = DATA.reports.filter(function(r){return r.category===cc.id && r!==feat;});
+      if(!list.length) return;
+      h += '<section class="shelf" style="--catc:'+col(cc.id)+'"><div class="shelf-head"><h2>'+esc(cc.name)+'</h2><a href="#'+cc.id+'">모두 펼쳐 읽기 →</a></div>'
+        + list.map(function(r){
+            return '<a class="row" href="#'+idOf(r)+'"><div class="img">'+img(r)+'</div><div>'
+              +'<div class="row-date">'+fmt(r.date)+'</div><h3>'+esc(r.title)+'</h3>'
+              +'<p>'+esc(r.subtitle||(r.highlights&&r.highlights[0])||r.summary||'')+'</p></div></a>';
+          }).join('')+'</section>';
+    });
+    return h+'</div>';
+  }
+
+  function blocks(it){
+    if(it.blocks&&it.blocks.length) return '<div class="blocks">'+it.blocks.map(function(b){
+      if(b.h==='lead') return '<p class="lead-p">'+esc(b.p)+'</p>';
+      return '<div class="blk">'
+        +(b.li?'<ul>'+b.li.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p>'+esc(b.p||'')+'</p>')+'</div>';
+    }).join('')+'</div>';
+    return '<div class="blocks"><p>'+(it.facts||[]).map(esc).join(' ')+'</p></div>';
+  }
+  function srcLine(list){
+    if(!list||!list.length) return '';
+    return '<div class="src">출처 · '+list.map(function(x){return '<a href="'+escRaw(x.url)+'" target="_blank" rel="noopener">'+esc(x.name)+'</a>';}).join(' · ')+'</div>';
+  }
+
+  function article(r){
+    var c = CAT[r.category];
+    var h = '<article class="report" id="r-'+idOf(r)+'">'
+      +'<div class="r-head indent"><span class="label">'+esc(c.name)+'<i>'+fmt(r.date)+' · No.'+String(r.issue).padStart(2,"0")+'</i></span>'
+      +'<h2>'+esc(r.title)+'</h2>'+(r.subtitle?'<p class="deck">'+esc(r.subtitle)+'</p>':'')+(r.range?'<div class="r-range">확인 범위 '+esc(r.range)+'</div>':'')+'</div>'
+      +(r.image?'<figure class="r-img"><img src="'+escRaw(r.image)+'" alt="" onerror="this.parentNode.remove()">'+(r.image_credit?'<figcaption>'+esc(r.image_credit)+'</figcaption>':'')+'</figure>':'')
+      +((r.highlights&&r.highlights.length)?'<div class="keys indent"><div class="k-title">이번 주 핵심</div>'+points(r.highlights)+'</div>':'');
+    h += '<div class="items">'+(r.items||[]).map(function(it,i){
+      return '<section class="item"><div class="i-meta"><span class="i-no">'+String(i+1).padStart(2,"0")+'</span>'
+        +(it.important?'<span class="badge">중요</span>':'')+(it.when?'<span class="i-when">'+esc(it.when)+'</span>':'')+'</div>'
+        +'<div><h3>'+esc(it.title)+'</h3>'+blocks(it)+srcLine(it.sources)+'</div></section>';
+    }).join('')+'</div>';
+    var after = '';
+    if(r.takeaways&&r.takeaways.length) after += '<div><h4>해석 메모</h4><ul>'+r.takeaways.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></div>';
+    if(r.note) after += '<div><h4>확인 범위 메모</h4><ul><li>'+esc(r.note)+(r.note_sources?' '+r.note_sources.map(function(x){return '<a href="'+escRaw(x.url)+'" target="_blank" rel="noopener">'+esc(x.name)+'</a>';}).join(' · '):'')+'</li></ul></div>';
+    if(r.watchlist&&r.watchlist.length) after += '<div><h4>다음에 확인할 것</h4><ul>'+r.watchlist.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></div>';
+    if(r.videos&&r.videos.length) after += '<div><h4>볼 영상</h4><ul>'+r.videos.map(function(v){return '<li><a href="'+escRaw(v.url)+'" target="_blank" rel="noopener">'+esc(v.title)+' ↗</a>'+(v.note?'<span>'+esc(v.note)+'</span>':'')+'</li>';}).join('')+'</ul></div>';
+    if(after) h += '<div class="after indent">'+after+'</div>';
+    return h+'</article>';
+  }
+
+  function weekLabel(d){
+    var p=d.split('-'), m=+p[1], day=+p[2];
+    return m+'월 '+Math.ceil(day/7)+'주차';
+  }
+  function picksArticle(r){
+    return '<section class="week" id="r-'+idOf(r)+'"><div class="week-head"><h2>'+weekLabel(r.date)+'</h2><span>'+fmt(r.date)+' · '+(r.works||[]).length+'편'+(r.summary?' · '+esc(r.summary.replace(/\.$/,'')):'')+'</span></div><div class="pgrid">'
+      + (r.works||[]).map(function(w,i){
+          return '<details class="pd" id="w-'+r.date+'-'+(i+1)+'"><summary><div class="img">'+(w.image?'<img src="'+escRaw(w.image)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'</div>'
+            +'<span class="ptype">'+esc(w.type)+'</span><h3>'+esc(w.title)+'</h3><span class="pmaker">'+esc(w.maker||'')+'</span>'
+            +(w.basis?'<span class="basis"><b>'+esc(w.basis.kind)+'</b>'+esc(w.basis.text)+'</span>':'')+'<span class="more">자세히</span></summary>'
+            +'<div class="pd-body">'+(w.when?'<div class="pd-when">'+esc(w.when)+'</div>':'')+(w.facts||[]).map(function(f){return '<p>'+esc(f)+'</p>';}).join('')
+            +(w.link?'<a class="watch" href="'+escRaw(w.link)+'" target="_blank" rel="noopener">보기 ↗</a>':'')+srcLine(w.sources)+'</div></details>';
+        }).join('')+'</div></section>';
+  }
+
+  function category(id){
+    var c = CAT[id];
+    var list = DATA.reports.filter(function(r){return r.category===id;});
+    return '<div class="page" style="--catc:'+col(id)+'"><div class="cat-head"><h1>'+esc(c.name)+'</h1>'
+      +(list.length>1?'<div class="jump">'+list.map(function(r){return '<button type="button" data-to="r-'+idOf(r)+'">'+fmt(r.date)+'</button>';}).join('')+'</div>':'')
+      +'</div>'+(list.length?list.map(id==='picks'?picksArticle:article).join(''):'<p class="r-range" style="margin-top:24px">첫 리포트는 다음 주 월요일 아침에 올라옵니다.</p>')+'</div>';
+  }
+
+  function route(){
+    var key = (location.hash||"").slice(1);
+    var main = document.getElementById("main");
+    var wm = key.match(/^picks-(\d{4}-\d{2}-\d{2})-(\d+)$/);
+    var r = DATA.reports.filter(function(x){return idOf(x)===key || (wm && x.category==='picks' && x.date===wm[1]);})[0];
+    var catId = r ? r.category : (CAT[key] ? key : "");
+    if(catId){
+      main.innerHTML = category(catId);
+      tabs(catId);
+      main.querySelectorAll(".jump button").forEach(function(b){
+        b.addEventListener("click",function(){var t=document.getElementById(b.getAttribute("data-to")); if(t) t.scrollIntoView({behavior:"smooth"});});
+      });
+      if(r){ var t=document.getElementById(wm?("w-"+wm[1]+"-"+wm[2]):("r-"+key)); if(t){ if(t.tagName==='DETAILS') t.open=true; t.scrollIntoView(); return; } }
+    } else { main.innerHTML = home(); tabs(""); }
+    window.scrollTo(0,0);
+  }
+
+  // 매주 자동 작업이 Google Drive 폴더에 올린 회차를 읽어 합칩니다.
+  var FOLDER = "1UB57kLM8RHOfucHVdTZin4_xAZ49MtpG";
+  function norm(x){
+    if(x==null) return x;
+    if(typeof x==="string"){ try{ return JSON.parse(x); }catch(e){ return x; } }
+    if(x.structuredContent) return x.structuredContent;
+    if(Array.isArray(x.content)){ var t=x.content.filter(function(c){return c&&c.type==="text";}).map(function(c){return c.text;}).join(""); return norm(t); }
+    return x;
+  }
+  function b64text(s){
+    var bin = atob(String(s).replace(/[^A-Za-z0-9+\/=]/g,""));
+    var u = new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    return new TextDecoder("utf-8").decode(u);
+  }
+  function b64clean(s){ return String(s).replace(/[^A-Za-z0-9+\/=]/g,""); }
+  function rerender(){ var y=window.scrollY; route(); window.scrollTo(0,y); }
+  async function loadDrive(){
+    var mcp; try{ mcp = await claude.use("mcp"); }catch(e){ return; }
+    if(!mcp) return;
+    var call = async function(tool,input){ var r = await mcp.callTool("Google Drive",tool,input); return norm(r&&r.payload!==undefined?r.payload:r); };
+    try{
+      var res = await call("search_files",{query:"parentId = '"+FOLDER+"' and trashed = false",excludeContentSnippets:true,pageSize:200});
+      var files = (res&&res.files)||[];
+      var byTitle = {}; files.forEach(function(f){byTitle[f.title]=f;});
+      var weeks = files.filter(function(f){return /^week-\d{4}-\d{2}-\d{2}\.txt$/.test(f.title);});
+      if(!weeks.length) return;
+      var added = [];
+      for(var i=0;i<weeks.length;i++){
+        try{
+          var c = await call("read_file_content",{fileId:weeks[i].id});
+          var raw = String(c.fileContent||c), d;
+          try{ d = JSON.parse(raw); }catch(e1){
+            try{ d = JSON.parse(raw.replace(/\\([\[\]_*`#()!{}+\-.>|~<])/g,"$1")); }catch(e2){ d = JSON.parse(b64text(raw)); } }
+          (d.reports||[]).forEach(function(r){added.push(r);});
+        }catch(e){}
+      }
+      if(!added.length) return;
+      added.forEach(function(r){
+        DATA.reports = DATA.reports.filter(function(x){return idOf(x)!==idOf(r);});
+        DATA.reports.push(r);
+      });
+      if(added.some(function(r){return r.featured;})) DATA.reports.forEach(function(x){ if(added.indexOf(x)<0) delete x.featured; });
+      DATA.reports.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});
+      rerender();
+      var imgs = [];
+      added.forEach(function(r){
+        if(typeof r.image==="string" && r.image.indexOf("drive:")===0) imgs.push(r);
+        (r.works||[]).forEach(function(w){ if(typeof w.image==="string" && w.image.indexOf("drive:")===0) imgs.push(w); });
+      });
+      for(var j=0;j<imgs.length;j++){
+        var f = byTitle[imgs[j].image.slice(6)];
+        if(!f){ delete imgs[j].image; continue; }
+        try{
+          var ic = await call("read_file_content",{fileId:f.id});
+          var bb = b64clean(ic.fileContent||ic); imgs[j].image = "data:"+(bb.indexOf("/9j/")===0?"image/jpeg":bb.indexOf("UklGR")===0?"image/webp":"image/avif")+";base64,"+bb;
+        }catch(e){ delete imgs[j].image; }
+      }
+      if(imgs.length) rerender();
+    }catch(e){}
+  }
+
+  fetch("reports.json",{cache:"no-store"}).then(function(res){
+    if(!res.ok) throw new Error(res.status); return res.json();
+  }).then(function(d){
+    DATA = d;
+    d.categories.forEach(function(c){CAT[c.id]=c;});
+    d.reports.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});
+    route();
+    window.addEventListener("hashchange", route);
+  }).catch(function(){
+    document.getElementById("main").innerHTML = '<div class="page"><p>리포트를 불러오지 못했습니다. 새로고침해 주세요.</p></div>';
+  });
+})();
+</script>
+</body>
+</html>
