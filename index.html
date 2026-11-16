@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>주간 동향 브리핑</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -376,6 +375,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
     d.reports.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});
     route();
     window.addEventListener("hashchange", route);
+    loadDrive();
   }).catch(function(){
     document.getElementById("main").innerHTML = '<div class="page"><p>리포트를 불러오지 못했습니다. 새로고침해 주세요.</p></div>';
   });
