@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>주간 동향 브리핑</title>
+<title>주간 콘텐츠 동향</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -40,6 +40,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
 .tabs{display:flex;gap:24px;overflow-x:auto}
 .tabs a{font-size:15px;color:var(--sub);white-space:nowrap;padding:18px 0;border-bottom:2px solid transparent}
 .tabs a:hover{color:var(--ink)}
+.tabs{align-items:center}
+.tabs a.all{font-size:18px;font-weight:800;color:var(--ink);position:relative;margin-right:2px}
+.tabs a.all::after{content:"";position:absolute;right:-13px;top:50%;height:18px;border-right:1px solid var(--line);transform:translateY(-50%)}
+.tabs a:not(.all){font-size:14px}
 .tabs a[aria-current="page"]{color:var(--catc,var(--ink));font-weight:700;border-bottom-color:var(--catc,var(--ink))}
 
 .page{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,32px) 120px}
@@ -180,7 +184,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
 </head>
 <body>
 <header class="top"><div class="top-in">
-  <a class="brand" href="#">주간 동향 브리핑</a>
+  <a class="brand" href="#">주간 콘텐츠 동향</a>
   <nav class="tabs" id="tabs" aria-label="분류"></nav>
 </div></header>
 <main id="main"></main>
@@ -198,7 +202,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
   var points = function(list){return '<ul class="points">'+(list||[]).map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>';};
 
   function tabs(active){
-    var h = '<a href="#" '+(active===""?'aria-current="page"':'')+'>전체</a>';
+    var h = '<a class="all" href="#" '+(active===""?'aria-current="page"':'')+'>전체</a>';
     DATA.categories.forEach(function(c){
       h += '<a href="#'+c.id+'" style="--catc:'+col(c.id)+'" '+(active===c.id?'aria-current="page"':'')+'>'+esc(c.name)+'</a>';
     });
